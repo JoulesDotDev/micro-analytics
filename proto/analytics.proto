@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package analytics;
+
+option go_package = "./proto;analytics";
+
+service Analytics {
+	rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {}
+	rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {}
+	rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse) {}
+	rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {}
+
+	rpc CreateAction(CreateActionRequest) returns (CreateActionResponse) {}
+	rpc ListActions(ListActionsRequest) returns (ListActionsResponse) {}
+	rpc DeleteAction(DeleteActionRequest) returns (DeleteActionResponse) {}
+	rpc UpdateAction(UpdateActionRequest) returns (UpdateActionResponse) {}
+}
+
+message Action {
+	string id = 1;
+	string created = 3;
+	string updated = 4;
+	string name = 5;
+	string description = 6;
+	uint32 value = 7; 
+}
+
+message Project {
+	string id = 1;
+	string created = 2;
+	string updated = 3;
+	string name = 4;
+	string description = 5;
+}
+
+message CreateActionRequest {
+	string project = 1;
+	string name = 2;
+	string description = 3;
+}
+
+message CreateActionResponse {
+	Action action = 1;
+}
+
+message ListActionsRequest {
+	string project = 1;
+}
+
+message ListActionsResponse {
+	repeated Action actions = 1;
+}
+
+message DeleteActionRequest {
+	string id = 1;
+}
+
+message DeleteActionResponse {
+	Action action = 1;
+}
+
+message UpdateActionRequest {
+	Action action = 1;
+}
+
+message UpdateActionResponse {
+	Action action = 1;
+}
+
+message CreateProjectRequest {
+	string name = 1;
+	string description = 2;
+}
+
+message CreateProjectResponse {
+	Project project = 1;
+}
+
+message ListProjectsRequest {}
+
+message ListProjectsResponse {
+	repeated Project projects = 1;
+}
+
+message DeleteProjectRequest {
+	string id = 1;
+}
+
+message DeleteProjectResponse {
+	Project project = 1;
+}
+
+message UpdateProjectRequest {
+	Project project = 1;
+}
+
+message UpdateProjectResponse {
+	Project project = 1;
+}

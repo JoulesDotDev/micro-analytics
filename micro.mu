@@ -1,1 +1,1 @@
-service micro-analytics
+service analytics

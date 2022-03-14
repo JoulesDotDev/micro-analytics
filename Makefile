@@ -8,15 +8,15 @@ init:
 
 .PHONY: api
 api:
-	protoc --openapi_out=. --proto_path=. proto/micro-analytics.proto
+	protoc --openapi_out=. --proto_path=. proto/analytics.proto
 
 .PHONY: proto
 proto:
-	protoc --proto_path=. --micro_out=. --go_out=:. proto/micro-analytics.proto
+	protoc --proto_path=. --micro_out=. --go_out=:. proto/analytics.proto
 	
 .PHONY: build
 build:
-	go build -o micro-analytics *.go
+	go build -o analytics *.go
 
 .PHONY: test
 test:
@@ -24,4 +24,4 @@ test:
 
 .PHONY: docker
 docker:
-	docker build . -t micro-analytics:latest
+	docker build . -t analytics:latest

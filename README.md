@@ -1,11 +1,11 @@
-# MicroAnalytics Service
+# Analytics Service
 
-This is the MicroAnalytics service
+This is the Analytics service
 
 Generated with
 
 ```
-micro new micro-analytics
+micro new analytics
 ```
 
 ## Usage
