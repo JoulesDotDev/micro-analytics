@@ -14,13 +14,13 @@ import (
 )
 
 // Create inserts a new action in the store
-func (e *Analytics) CreateAction(ctx context.Context, req *pb.CreateActionRequest, rsp *pb.CreateActionResponse) error {
+func (e *Analytics) CreateAction(ctx context.Context, req *pb.CreateActionRequest, rsp *pb.ActionResponse) error {
 	// Validate the request
 	if len(req.Name) == 0 {
 		return errors.BadRequest("action.create", "missing action name")
 	}
 	if len(req.Project) == 0 {
-		return errors.BadRequest("action.create", "missing project id")
+		return errors.BadRequest("action.create", "missing project ID")
 	}
 
 	tnt, ok := tenant.FromContext(ctx)
@@ -67,8 +67,48 @@ func (e *Analytics) CreateAction(ctx context.Context, req *pb.CreateActionReques
 	return nil
 }
 
+// Update is a unary API which updates a action in the store
+func (h *Analytics) GetAction(ctx context.Context, req *pb.RequestById, rsp *pb.ActionResponse) error {
+	// Validate the request
+	if len(req.Id) == 0 {
+		return errors.BadRequest("action.update", "Missing action ID")
+	}
+
+	tnt, ok := tenant.FromContext(ctx)
+	if !ok {
+		tnt = "default"
+	}
+
+	suffix := fmt.Sprintf("%s:action", req.Id)
+
+	keys, err := store.List(store.ListPrefix(tnt), store.ListSuffix(suffix))
+	if err != nil {
+		return errors.InternalServerError("action.delete", "Error reading from store: %v", err.Error())
+	}
+
+	key := keys[0]
+
+	// read the specific action
+	recs, err := store.Read(key)
+	if err == store.ErrNotFound {
+		return errors.NotFound("action.update", "Action not found")
+	} else if err != nil {
+		return errors.InternalServerError("action.update", "Error reading from store: %v", err.Error())
+	}
+
+	// Decode the action
+	var action *pb.Action
+	if err := recs[0].Decode(&action); err != nil {
+		return errors.InternalServerError("action.update", "Error unmarshaling JSON: %v", err.Error())
+	}
+
+	rsp.Action = action
+
+	return nil
+}
+
 // Delete removes the action from the store, looking up using ID
-func (h *Analytics) DeleteAction(ctx context.Context, req *pb.DeleteActionRequest, rsp *pb.DeleteActionResponse) error {
+func (h *Analytics) DeleteAction(ctx context.Context, req *pb.RequestById, rsp *pb.ActionResponse) error {
 	// Validate the request
 	if len(req.Id) == 0 {
 		return errors.BadRequest("action.delete", "Missing action ID")
@@ -111,8 +151,106 @@ func (h *Analytics) DeleteAction(ctx context.Context, req *pb.DeleteActionReques
 	return nil
 }
 
+// TriggerAction increments the value of the action by 1
+func (h *Analytics) TriggerAction(ctx context.Context, req *pb.RequestById, rsp *pb.Empty) error {
+	// Validate the request
+	if len(req.Id) == 0 {
+		return errors.BadRequest("action.reset", "Missing action ID")
+	}
+
+	tnt, ok := tenant.FromContext(ctx)
+	if !ok {
+		tnt = "default"
+	}
+
+	suffix := fmt.Sprintf("%s:action", req.Id)
+
+	keys, err := store.List(store.ListPrefix(tnt), store.ListSuffix(suffix))
+	if err != nil {
+		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
+	}
+
+	key := keys[0]
+
+	// read the specific action
+	recs, err := store.Read(key)
+	if err == store.ErrNotFound {
+		return errors.NotFound("action.reset", "Action not found")
+	} else if err != nil {
+		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
+	}
+
+	// Decode the action
+	var action *pb.Action
+	if err := recs[0].Decode(&action); err != nil {
+		return errors.InternalServerError("action.reset", "Error unmarshaling JSON: %v", err.Error())
+	}
+
+	// Reset the action's value
+	action.Value = action.Value + 1
+
+	rec := store.NewRecord(key, action)
+
+	// Write the updated action to the store
+	if err = store.Write(rec); err != nil {
+		return errors.InternalServerError("action.reset", "Error writing to store: %v", err.Error())
+	}
+
+	return nil
+}
+
+// ResetAction resets value of the action to 0
+func (h *Analytics) ResetAction(ctx context.Context, req *pb.RequestById, rsp *pb.ActionResponse) error {
+	// Validate the request
+	if len(req.Id) == 0 {
+		return errors.BadRequest("action.reset", "Missing action ID")
+	}
+
+	tnt, ok := tenant.FromContext(ctx)
+	if !ok {
+		tnt = "default"
+	}
+
+	suffix := fmt.Sprintf("%s:action", req.Id)
+
+	keys, err := store.List(store.ListPrefix(tnt), store.ListSuffix(suffix))
+	if err != nil {
+		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
+	}
+
+	key := keys[0]
+
+	// read the specific action
+	recs, err := store.Read(key)
+	if err == store.ErrNotFound {
+		return errors.NotFound("action.reset", "Action not found")
+	} else if err != nil {
+		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
+	}
+
+	// Decode the action
+	var action *pb.Action
+	if err := recs[0].Decode(&action); err != nil {
+		return errors.InternalServerError("action.reset", "Error unmarshaling JSON: %v", err.Error())
+	}
+
+	// Reset the action's value
+	action.Value = 0
+
+	rec := store.NewRecord(key, action)
+
+	// Write the updated action to the store
+	if err = store.Write(rec); err != nil {
+		return errors.InternalServerError("action.reset", "Error writing to store: %v", err.Error())
+	}
+
+	rsp.Action = action
+
+	return nil
+}
+
 // Update is a unary API which updates a action in the store
-func (h *Analytics) UpdateAction(ctx context.Context, req *pb.UpdateActionRequest, rsp *pb.UpdateActionResponse) error {
+func (h *Analytics) UpdateAction(ctx context.Context, req *pb.UpdateActionRequest, rsp *pb.ActionResponse) error {
 	// Validate the request
 	if req.Action == nil {
 		return errors.BadRequest("action.update", "Missing action")

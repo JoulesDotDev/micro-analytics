@@ -5,16 +5,22 @@ package analytics;
 option go_package = "./proto;analytics";
 
 service Analytics {
-	rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {}
-	rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {}
-	rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse) {}
-	rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {}
+	rpc CreateProject(CreateProjectRequest) returns (ProjectResponse) {}
+	rpc GetProject(RequestById) returns (ProjectResponse) {}
+	rpc ListProjects(Empty) returns (ListProjectsResponse) {}
+	rpc DeleteProject(RequestById) returns (ProjectResponse) {}
+	rpc UpdateProject(UpdateProjectRequest) returns (ProjectResponse) {}
 
-	rpc CreateAction(CreateActionRequest) returns (CreateActionResponse) {}
+	rpc CreateAction(CreateActionRequest) returns (ActionResponse) {}
+	rpc GetAction(RequestById) returns (ActionResponse) {}
 	rpc ListActions(ListActionsRequest) returns (ListActionsResponse) {}
-	rpc DeleteAction(DeleteActionRequest) returns (DeleteActionResponse) {}
-	rpc UpdateAction(UpdateActionRequest) returns (UpdateActionResponse) {}
+	rpc DeleteAction(RequestById) returns (ActionResponse) {}
+	rpc TriggerAction(RequestById) returns (Empty) {}
+	rpc ResetAction(RequestById) returns (ActionResponse) {}
+	rpc UpdateAction(UpdateActionRequest) returns (ActionResponse) {}
 }
+
+message Empty {}
 
 message Action {
 	string id = 1;
@@ -33,14 +39,27 @@ message Project {
 	string description = 5;
 }
 
+message ActionResponse {
+	Action action = 1;
+}
+
+message ProjectResponse {
+	Project project = 1;
+}
+
+message RequestById {
+	string id = 1;
+}
+
+message CreateProjectRequest {
+	string name = 1;
+	string description = 2;
+}
+
 message CreateActionRequest {
 	string project = 1;
 	string name = 2;
 	string description = 3;
-}
-
-message CreateActionResponse {
-	Action action = 1;
 }
 
 message ListActionsRequest {
@@ -51,49 +70,14 @@ message ListActionsResponse {
 	repeated Action actions = 1;
 }
 
-message DeleteActionRequest {
-	string id = 1;
-}
-
-message DeleteActionResponse {
-	Action action = 1;
+message ListProjectsResponse {
+	repeated Project projects = 1;
 }
 
 message UpdateActionRequest {
 	Action action = 1;
 }
 
-message UpdateActionResponse {
-	Action action = 1;
-}
-
-message CreateProjectRequest {
-	string name = 1;
-	string description = 2;
-}
-
-message CreateProjectResponse {
-	Project project = 1;
-}
-
-message ListProjectsRequest {}
-
-message ListProjectsResponse {
-	repeated Project projects = 1;
-}
-
-message DeleteProjectRequest {
-	string id = 1;
-}
-
-message DeleteProjectResponse {
-	Project project = 1;
-}
-
 message UpdateProjectRequest {
-	Project project = 1;
-}
-
-message UpdateProjectResponse {
 	Project project = 1;
 }

@@ -14,7 +14,7 @@ import (
 )
 
 // CreateProject inserts a new project in the store
-func (e *Analytics) CreateProject(ctx context.Context, req *pb.CreateProjectRequest, rsp *pb.CreateProjectResponse) error {
+func (e *Analytics) CreateProject(ctx context.Context, req *pb.CreateProjectRequest, rsp *pb.ProjectResponse) error {
 	// Validate the request
 	if len(req.Name) == 0 {
 		return errors.BadRequest("project.create", "missing project name")
@@ -53,8 +53,41 @@ func (e *Analytics) CreateProject(ctx context.Context, req *pb.CreateProjectRequ
 	return nil
 }
 
+// GetProject returns a project, looking up using ID
+func (h *Analytics) GetProject(ctx context.Context, req *pb.RequestById, rsp *pb.ProjectResponse) error {
+	// Validate the request
+	if len(req.Id) == 0 {
+		return errors.BadRequest("project.update", "Missing project ID")
+	}
+
+	tnt, ok := tenant.FromContext(ctx)
+	if !ok {
+		tnt = "default"
+	}
+
+	key := fmt.Sprintf("%s:%s:project", tnt, req.Id)
+
+	// read the specific project
+	recs, err := store.Read(key)
+	if err == store.ErrNotFound {
+		return errors.NotFound("project.update", "Project not found")
+	} else if err != nil {
+		return errors.InternalServerError("project.update", "Error reading from store: %v", err.Error())
+	}
+
+	// Decode the project
+	var project *pb.Project
+	if err := recs[0].Decode(&project); err != nil {
+		return errors.InternalServerError("project.update", "Error unmarshaling JSON: %v", err.Error())
+	}
+
+	rsp.Project = project
+
+	return nil
+}
+
 // DeleteProject removes the project and related actions from the store, looking up using ID
-func (h *Analytics) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest, rsp *pb.DeleteProjectResponse) error {
+func (h *Analytics) DeleteProject(ctx context.Context, req *pb.RequestById, rsp *pb.ProjectResponse) error {
 	// Validate the request
 	if len(req.Id) == 0 {
 		return errors.BadRequest("project.delete", "Missing project ID")
@@ -105,7 +138,7 @@ func (h *Analytics) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequ
 }
 
 // UpdateProject is a unary API which updates a project in the store
-func (h *Analytics) UpdateProject(ctx context.Context, req *pb.UpdateProjectRequest, rsp *pb.UpdateProjectResponse) error {
+func (h *Analytics) UpdateProject(ctx context.Context, req *pb.UpdateProjectRequest, rsp *pb.ProjectResponse) error {
 	// Validate the request
 	if req.Project == nil {
 		return errors.BadRequest("project.update", "Missing project")
@@ -160,7 +193,7 @@ func (h *Analytics) UpdateProject(ctx context.Context, req *pb.UpdateProjectRequ
 }
 
 // ListProjects returns all of the projects in the store
-func (h *Analytics) ListProjects(ctx context.Context, req *pb.ListProjectsRequest, rsp *pb.ListProjectsResponse) error {
+func (h *Analytics) ListProjects(ctx context.Context, req *pb.Empty, rsp *pb.ListProjectsResponse) error {
 	tnt, ok := tenant.FromContext(ctx)
 	if !ok {
 		tnt = "default"

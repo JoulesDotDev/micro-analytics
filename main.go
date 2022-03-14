@@ -15,8 +15,10 @@ func main() {
 		service.Version("latest"),
 	)
 
+	h := handler.New()
+
 	// Register handler
-	pb.RegisterAnalyticsHandler(srv.Server(), new(handler.Analytics))
+	pb.RegisterAnalyticsHandler(srv.Server(), h)
 
 	// Run service
 	if err := srv.Run(); err != nil {
