@@ -72,7 +72,7 @@ func (a *Analytics) Track(ctx context.Context, req *pb.TrackRequest, rsp *pb.Tra
 }
 
 // Get returns a single Event
-func (a *Analytics) Get(ctx context.Context, req *pb.GetRequest, rsp *pb.GetResponse) error {
+func (a *Analytics) Read(ctx context.Context, req *pb.ReadRequest, rsp *pb.ReadResponse) error {
 	// Validate the request
 	if len(req.Name) == 0 {
 		return errors.BadRequest("analytics.get", "missing name")

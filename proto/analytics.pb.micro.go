@@ -43,7 +43,7 @@ func NewAnalyticsEndpoints() []*api.Endpoint {
 
 type AnalyticsService interface {
 	Track(ctx context.Context, in *TrackRequest, opts ...client.CallOption) (*TrackResponse, error)
-	Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*GetResponse, error)
+	Read(ctx context.Context, in *ReadRequest, opts ...client.CallOption) (*ReadResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...client.CallOption) (*DeleteResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...client.CallOption) (*ListResponse, error)
 }
@@ -70,9 +70,9 @@ func (c *analyticsService) Track(ctx context.Context, in *TrackRequest, opts ...
 	return out, nil
 }
 
-func (c *analyticsService) Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*GetResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.Get", in)
-	out := new(GetResponse)
+func (c *analyticsService) Read(ctx context.Context, in *ReadRequest, opts ...client.CallOption) (*ReadResponse, error) {
+	req := c.c.NewRequest(c.name, "Analytics.Read", in)
+	out := new(ReadResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func (c *analyticsService) List(ctx context.Context, in *ListRequest, opts ...cl
 
 type AnalyticsHandler interface {
 	Track(context.Context, *TrackRequest, *TrackResponse) error
-	Get(context.Context, *GetRequest, *GetResponse) error
+	Read(context.Context, *ReadRequest, *ReadResponse) error
 	Delete(context.Context, *DeleteRequest, *DeleteResponse) error
 	List(context.Context, *ListRequest, *ListResponse) error
 }
@@ -112,7 +112,7 @@ type AnalyticsHandler interface {
 func RegisterAnalyticsHandler(s server.Server, hdlr AnalyticsHandler, opts ...server.HandlerOption) error {
 	type analytics interface {
 		Track(ctx context.Context, in *TrackRequest, out *TrackResponse) error
-		Get(ctx context.Context, in *GetRequest, out *GetResponse) error
+		Read(ctx context.Context, in *ReadRequest, out *ReadResponse) error
 		Delete(ctx context.Context, in *DeleteRequest, out *DeleteResponse) error
 		List(ctx context.Context, in *ListRequest, out *ListResponse) error
 	}
@@ -131,8 +131,8 @@ func (h *analyticsHandler) Track(ctx context.Context, in *TrackRequest, out *Tra
 	return h.AnalyticsHandler.Track(ctx, in, out)
 }
 
-func (h *analyticsHandler) Get(ctx context.Context, in *GetRequest, out *GetResponse) error {
-	return h.AnalyticsHandler.Get(ctx, in, out)
+func (h *analyticsHandler) Read(ctx context.Context, in *ReadRequest, out *ReadResponse) error {
+	return h.AnalyticsHandler.Read(ctx, in, out)
 }
 
 func (h *analyticsHandler) Delete(ctx context.Context, in *DeleteRequest, out *DeleteResponse) error {

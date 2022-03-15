@@ -1,23 +1,6 @@
+Track and retrieve events
+
 # Analytics Service
 
-This is the Analytics service
+The analytics service lets you create events, atomically increment them and read their values.
 
-Generated with
-
-```
-micro new analytics
-```
-
-## Usage
-
-Generate the proto code
-
-```
-make proto
-```
-
-Run the service
-
-```
-micro run .
-```
