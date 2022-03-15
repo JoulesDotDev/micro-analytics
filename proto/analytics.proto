@@ -5,79 +5,33 @@ package analytics;
 option go_package = "./proto;analytics";
 
 service Analytics {
-	rpc CreateProject(CreateProjectRequest) returns (ProjectResponse) {}
-	rpc GetProject(RequestById) returns (ProjectResponse) {}
-	rpc ListProjects(Empty) returns (ListProjectsResponse) {}
-	rpc DeleteProject(RequestById) returns (ProjectResponse) {}
-	rpc UpdateProject(UpdateProjectRequest) returns (ProjectResponse) {}
-
-	rpc CreateAction(CreateActionRequest) returns (ActionResponse) {}
-	rpc GetAction(RequestById) returns (ActionResponse) {}
-	rpc ListActions(ListActionsRequest) returns (ListActionsResponse) {}
-	rpc DeleteAction(RequestById) returns (ActionResponse) {}
-	rpc TriggerAction(RequestById) returns (Empty) {}
-	rpc ResetAction(RequestById) returns (ActionResponse) {}
-	rpc UpdateAction(UpdateActionRequest) returns (ActionResponse) {}
+	rpc Track(AnalyticsRequest) returns (Empty) {}
+	rpc Get(AnalyticsRequest) returns (AnalyticsResponse) {}
+	rpc Delete(AnalyticsRequest) returns (AnalyticsResponse) {}
+	rpc List(Empty) returns (Counters) {}
 }
 
 message Empty {}
 
-message Action {
-	string id = 1;
-	string created = 3;
-	string updated = 4;
-	string name = 5;
-	string description = 6;
-	uint32 value = 7; 
-}
-
-message Project {
-	string id = 1;
-	string created = 2;
-	string updated = 3;
-	string name = 4;
-	string description = 5;
-}
-
-message ActionResponse {
-	Action action = 1;
-}
-
-message ProjectResponse {
-	Project project = 1;
-}
-
-message RequestById {
-	string id = 1;
-}
-
-message CreateProjectRequest {
+message AnalyticsRequest {
 	string name = 1;
-	string description = 2;
 }
 
-message CreateActionRequest {
-	string project = 1;
-	string name = 2;
-	string description = 3;
+message RenameRequest {
+	string name = 1;
+	string newName = 2;
 }
 
-message ListActionsRequest {
-	string project = 1;
+message Counter {
+	string name = 1;
+	string created = 2;
+	uint64 value = 3;
 }
 
-message ListActionsResponse {
-	repeated Action actions = 1;
+message AnalyticsResponse {
+	Counter counter = 1;
 }
 
-message ListProjectsResponse {
-	repeated Project projects = 1;
-}
-
-message UpdateActionRequest {
-	Action action = 1;
-}
-
-message UpdateProjectRequest {
-	Project project = 1;
+message Counters {
+	repeated Counter counters = 1;
 }

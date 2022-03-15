@@ -42,18 +42,10 @@ func NewAnalyticsEndpoints() []*api.Endpoint {
 // Client API for Analytics service
 
 type AnalyticsService interface {
-	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...client.CallOption) (*ProjectResponse, error)
-	GetProject(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ProjectResponse, error)
-	ListProjects(ctx context.Context, in *Empty, opts ...client.CallOption) (*ListProjectsResponse, error)
-	DeleteProject(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ProjectResponse, error)
-	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...client.CallOption) (*ProjectResponse, error)
-	CreateAction(ctx context.Context, in *CreateActionRequest, opts ...client.CallOption) (*ActionResponse, error)
-	GetAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error)
-	ListActions(ctx context.Context, in *ListActionsRequest, opts ...client.CallOption) (*ListActionsResponse, error)
-	DeleteAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error)
-	TriggerAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*Empty, error)
-	ResetAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error)
-	UpdateAction(ctx context.Context, in *UpdateActionRequest, opts ...client.CallOption) (*ActionResponse, error)
+	Track(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*Empty, error)
+	Get(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error)
+	Delete(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error)
+	List(ctx context.Context, in *Empty, opts ...client.CallOption) (*Counters, error)
 }
 
 type analyticsService struct {
@@ -68,98 +60,8 @@ func NewAnalyticsService(name string, c client.Client) AnalyticsService {
 	}
 }
 
-func (c *analyticsService) CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...client.CallOption) (*ProjectResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.CreateProject", in)
-	out := new(ProjectResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) GetProject(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ProjectResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.GetProject", in)
-	out := new(ProjectResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) ListProjects(ctx context.Context, in *Empty, opts ...client.CallOption) (*ListProjectsResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.ListProjects", in)
-	out := new(ListProjectsResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) DeleteProject(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ProjectResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.DeleteProject", in)
-	out := new(ProjectResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...client.CallOption) (*ProjectResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.UpdateProject", in)
-	out := new(ProjectResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) CreateAction(ctx context.Context, in *CreateActionRequest, opts ...client.CallOption) (*ActionResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.CreateAction", in)
-	out := new(ActionResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) GetAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.GetAction", in)
-	out := new(ActionResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) ListActions(ctx context.Context, in *ListActionsRequest, opts ...client.CallOption) (*ListActionsResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.ListActions", in)
-	out := new(ListActionsResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) DeleteAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.DeleteAction", in)
-	out := new(ActionResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analyticsService) TriggerAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "Analytics.TriggerAction", in)
+func (c *analyticsService) Track(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*Empty, error) {
+	req := c.c.NewRequest(c.name, "Analytics.Track", in)
 	out := new(Empty)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -168,9 +70,9 @@ func (c *analyticsService) TriggerAction(ctx context.Context, in *RequestById, o
 	return out, nil
 }
 
-func (c *analyticsService) ResetAction(ctx context.Context, in *RequestById, opts ...client.CallOption) (*ActionResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.ResetAction", in)
-	out := new(ActionResponse)
+func (c *analyticsService) Get(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error) {
+	req := c.c.NewRequest(c.name, "Analytics.Get", in)
+	out := new(AnalyticsResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -178,9 +80,19 @@ func (c *analyticsService) ResetAction(ctx context.Context, in *RequestById, opt
 	return out, nil
 }
 
-func (c *analyticsService) UpdateAction(ctx context.Context, in *UpdateActionRequest, opts ...client.CallOption) (*ActionResponse, error) {
-	req := c.c.NewRequest(c.name, "Analytics.UpdateAction", in)
-	out := new(ActionResponse)
+func (c *analyticsService) Delete(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error) {
+	req := c.c.NewRequest(c.name, "Analytics.Delete", in)
+	out := new(AnalyticsResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsService) List(ctx context.Context, in *Empty, opts ...client.CallOption) (*Counters, error) {
+	req := c.c.NewRequest(c.name, "Analytics.List", in)
+	out := new(Counters)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -191,34 +103,18 @@ func (c *analyticsService) UpdateAction(ctx context.Context, in *UpdateActionReq
 // Server API for Analytics service
 
 type AnalyticsHandler interface {
-	CreateProject(context.Context, *CreateProjectRequest, *ProjectResponse) error
-	GetProject(context.Context, *RequestById, *ProjectResponse) error
-	ListProjects(context.Context, *Empty, *ListProjectsResponse) error
-	DeleteProject(context.Context, *RequestById, *ProjectResponse) error
-	UpdateProject(context.Context, *UpdateProjectRequest, *ProjectResponse) error
-	CreateAction(context.Context, *CreateActionRequest, *ActionResponse) error
-	GetAction(context.Context, *RequestById, *ActionResponse) error
-	ListActions(context.Context, *ListActionsRequest, *ListActionsResponse) error
-	DeleteAction(context.Context, *RequestById, *ActionResponse) error
-	TriggerAction(context.Context, *RequestById, *Empty) error
-	ResetAction(context.Context, *RequestById, *ActionResponse) error
-	UpdateAction(context.Context, *UpdateActionRequest, *ActionResponse) error
+	Track(context.Context, *AnalyticsRequest, *Empty) error
+	Get(context.Context, *AnalyticsRequest, *AnalyticsResponse) error
+	Delete(context.Context, *AnalyticsRequest, *AnalyticsResponse) error
+	List(context.Context, *Empty, *Counters) error
 }
 
 func RegisterAnalyticsHandler(s server.Server, hdlr AnalyticsHandler, opts ...server.HandlerOption) error {
 	type analytics interface {
-		CreateProject(ctx context.Context, in *CreateProjectRequest, out *ProjectResponse) error
-		GetProject(ctx context.Context, in *RequestById, out *ProjectResponse) error
-		ListProjects(ctx context.Context, in *Empty, out *ListProjectsResponse) error
-		DeleteProject(ctx context.Context, in *RequestById, out *ProjectResponse) error
-		UpdateProject(ctx context.Context, in *UpdateProjectRequest, out *ProjectResponse) error
-		CreateAction(ctx context.Context, in *CreateActionRequest, out *ActionResponse) error
-		GetAction(ctx context.Context, in *RequestById, out *ActionResponse) error
-		ListActions(ctx context.Context, in *ListActionsRequest, out *ListActionsResponse) error
-		DeleteAction(ctx context.Context, in *RequestById, out *ActionResponse) error
-		TriggerAction(ctx context.Context, in *RequestById, out *Empty) error
-		ResetAction(ctx context.Context, in *RequestById, out *ActionResponse) error
-		UpdateAction(ctx context.Context, in *UpdateActionRequest, out *ActionResponse) error
+		Track(ctx context.Context, in *AnalyticsRequest, out *Empty) error
+		Get(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error
+		Delete(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error
+		List(ctx context.Context, in *Empty, out *Counters) error
 	}
 	type Analytics struct {
 		analytics
@@ -231,50 +127,18 @@ type analyticsHandler struct {
 	AnalyticsHandler
 }
 
-func (h *analyticsHandler) CreateProject(ctx context.Context, in *CreateProjectRequest, out *ProjectResponse) error {
-	return h.AnalyticsHandler.CreateProject(ctx, in, out)
+func (h *analyticsHandler) Track(ctx context.Context, in *AnalyticsRequest, out *Empty) error {
+	return h.AnalyticsHandler.Track(ctx, in, out)
 }
 
-func (h *analyticsHandler) GetProject(ctx context.Context, in *RequestById, out *ProjectResponse) error {
-	return h.AnalyticsHandler.GetProject(ctx, in, out)
+func (h *analyticsHandler) Get(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error {
+	return h.AnalyticsHandler.Get(ctx, in, out)
 }
 
-func (h *analyticsHandler) ListProjects(ctx context.Context, in *Empty, out *ListProjectsResponse) error {
-	return h.AnalyticsHandler.ListProjects(ctx, in, out)
+func (h *analyticsHandler) Delete(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error {
+	return h.AnalyticsHandler.Delete(ctx, in, out)
 }
 
-func (h *analyticsHandler) DeleteProject(ctx context.Context, in *RequestById, out *ProjectResponse) error {
-	return h.AnalyticsHandler.DeleteProject(ctx, in, out)
-}
-
-func (h *analyticsHandler) UpdateProject(ctx context.Context, in *UpdateProjectRequest, out *ProjectResponse) error {
-	return h.AnalyticsHandler.UpdateProject(ctx, in, out)
-}
-
-func (h *analyticsHandler) CreateAction(ctx context.Context, in *CreateActionRequest, out *ActionResponse) error {
-	return h.AnalyticsHandler.CreateAction(ctx, in, out)
-}
-
-func (h *analyticsHandler) GetAction(ctx context.Context, in *RequestById, out *ActionResponse) error {
-	return h.AnalyticsHandler.GetAction(ctx, in, out)
-}
-
-func (h *analyticsHandler) ListActions(ctx context.Context, in *ListActionsRequest, out *ListActionsResponse) error {
-	return h.AnalyticsHandler.ListActions(ctx, in, out)
-}
-
-func (h *analyticsHandler) DeleteAction(ctx context.Context, in *RequestById, out *ActionResponse) error {
-	return h.AnalyticsHandler.DeleteAction(ctx, in, out)
-}
-
-func (h *analyticsHandler) TriggerAction(ctx context.Context, in *RequestById, out *Empty) error {
-	return h.AnalyticsHandler.TriggerAction(ctx, in, out)
-}
-
-func (h *analyticsHandler) ResetAction(ctx context.Context, in *RequestById, out *ActionResponse) error {
-	return h.AnalyticsHandler.ResetAction(ctx, in, out)
-}
-
-func (h *analyticsHandler) UpdateAction(ctx context.Context, in *UpdateActionRequest, out *ActionResponse) error {
-	return h.AnalyticsHandler.UpdateAction(ctx, in, out)
+func (h *analyticsHandler) List(ctx context.Context, in *Empty, out *Counters) error {
+	return h.AnalyticsHandler.List(ctx, in, out)
 }
