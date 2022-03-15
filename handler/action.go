@@ -158,43 +158,48 @@ func (h *Analytics) TriggerAction(ctx context.Context, req *pb.RequestById, rsp 
 		return errors.BadRequest("action.reset", "Missing action ID")
 	}
 
-	tnt, ok := tenant.FromContext(ctx)
-	if !ok {
-		tnt = "default"
-	}
+	defer func() {
+		h.lock.mu.Lock()
+		defer h.lock.mu.Unlock()
 
-	suffix := fmt.Sprintf("%s:action", req.Id)
+		tnt, ok := tenant.FromContext(ctx)
+		if !ok {
+			tnt = "default"
+		}
 
-	keys, err := store.List(store.ListPrefix(tnt), store.ListSuffix(suffix))
-	if err != nil {
-		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
-	}
+		suffix := fmt.Sprintf("%s:action", req.Id)
 
-	key := keys[0]
+		keys, err := store.List(store.ListPrefix(tnt), store.ListSuffix(suffix))
+		if err != nil {
+			return
+		}
 
-	// read the specific action
-	recs, err := store.Read(key)
-	if err == store.ErrNotFound {
-		return errors.NotFound("action.reset", "Action not found")
-	} else if err != nil {
-		return errors.InternalServerError("action.reset", "Error reading from store: %v", err.Error())
-	}
+		key := keys[0]
 
-	// Decode the action
-	var action *pb.Action
-	if err := recs[0].Decode(&action); err != nil {
-		return errors.InternalServerError("action.reset", "Error unmarshaling JSON: %v", err.Error())
-	}
+		// read the specific action
+		recs, err := store.Read(key)
+		if err == store.ErrNotFound {
+			return
+		} else if err != nil {
+			return
+		}
 
-	// Reset the action's value
-	action.Value = action.Value + 1
+		// Decode the action
+		var action *pb.Action
+		if err := recs[0].Decode(&action); err != nil {
+			return
+		}
 
-	rec := store.NewRecord(key, action)
+		// Reset the action's value
+		action.Value = action.Value + 1
 
-	// Write the updated action to the store
-	if err = store.Write(rec); err != nil {
-		return errors.InternalServerError("action.reset", "Error writing to store: %v", err.Error())
-	}
+		rec := store.NewRecord(key, action)
+
+		// Write the updated action to the store
+		if err = store.Write(rec); err != nil {
+			return
+		}
+	}()
 
 	return nil
 }
