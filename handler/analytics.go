@@ -1,11 +1,13 @@
 package handler
 
+import (
+	"sync"
+)
+
 type Analytics struct {
-	lock *Lock
+	lock sync.Mutex
 }
 
 func New() *Analytics {
-	return &Analytics{
-		lock: CreateLock(),
-	}
+	return &Analytics{}
 }

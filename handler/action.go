@@ -159,8 +159,8 @@ func (h *Analytics) TriggerAction(ctx context.Context, req *pb.RequestById, rsp 
 	}
 
 	defer func() {
-		h.lock.mu.Lock()
-		defer h.lock.mu.Unlock()
+		h.lock.Lock()
+		defer h.lock.Unlock()
 
 		tnt, ok := tenant.FromContext(ctx)
 		if !ok {
