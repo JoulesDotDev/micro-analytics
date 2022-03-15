@@ -42,10 +42,10 @@ func NewAnalyticsEndpoints() []*api.Endpoint {
 // Client API for Analytics service
 
 type AnalyticsService interface {
-	Track(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*Empty, error)
-	Get(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error)
-	Delete(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error)
-	List(ctx context.Context, in *Empty, opts ...client.CallOption) (*Counters, error)
+	Track(ctx context.Context, in *TrackRequest, opts ...client.CallOption) (*TrackResponse, error)
+	Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*GetResponse, error)
+	Delete(ctx context.Context, in *DeleteRequest, opts ...client.CallOption) (*DeleteResponse, error)
+	List(ctx context.Context, in *ListRequest, opts ...client.CallOption) (*ListResponse, error)
 }
 
 type analyticsService struct {
@@ -60,9 +60,9 @@ func NewAnalyticsService(name string, c client.Client) AnalyticsService {
 	}
 }
 
-func (c *analyticsService) Track(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*Empty, error) {
+func (c *analyticsService) Track(ctx context.Context, in *TrackRequest, opts ...client.CallOption) (*TrackResponse, error) {
 	req := c.c.NewRequest(c.name, "Analytics.Track", in)
-	out := new(Empty)
+	out := new(TrackResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -70,9 +70,9 @@ func (c *analyticsService) Track(ctx context.Context, in *AnalyticsRequest, opts
 	return out, nil
 }
 
-func (c *analyticsService) Get(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error) {
+func (c *analyticsService) Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*GetResponse, error) {
 	req := c.c.NewRequest(c.name, "Analytics.Get", in)
-	out := new(AnalyticsResponse)
+	out := new(GetResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -80,9 +80,9 @@ func (c *analyticsService) Get(ctx context.Context, in *AnalyticsRequest, opts .
 	return out, nil
 }
 
-func (c *analyticsService) Delete(ctx context.Context, in *AnalyticsRequest, opts ...client.CallOption) (*AnalyticsResponse, error) {
+func (c *analyticsService) Delete(ctx context.Context, in *DeleteRequest, opts ...client.CallOption) (*DeleteResponse, error) {
 	req := c.c.NewRequest(c.name, "Analytics.Delete", in)
-	out := new(AnalyticsResponse)
+	out := new(DeleteResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,9 +90,9 @@ func (c *analyticsService) Delete(ctx context.Context, in *AnalyticsRequest, opt
 	return out, nil
 }
 
-func (c *analyticsService) List(ctx context.Context, in *Empty, opts ...client.CallOption) (*Counters, error) {
+func (c *analyticsService) List(ctx context.Context, in *ListRequest, opts ...client.CallOption) (*ListResponse, error) {
 	req := c.c.NewRequest(c.name, "Analytics.List", in)
-	out := new(Counters)
+	out := new(ListResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -103,18 +103,18 @@ func (c *analyticsService) List(ctx context.Context, in *Empty, opts ...client.C
 // Server API for Analytics service
 
 type AnalyticsHandler interface {
-	Track(context.Context, *AnalyticsRequest, *Empty) error
-	Get(context.Context, *AnalyticsRequest, *AnalyticsResponse) error
-	Delete(context.Context, *AnalyticsRequest, *AnalyticsResponse) error
-	List(context.Context, *Empty, *Counters) error
+	Track(context.Context, *TrackRequest, *TrackResponse) error
+	Get(context.Context, *GetRequest, *GetResponse) error
+	Delete(context.Context, *DeleteRequest, *DeleteResponse) error
+	List(context.Context, *ListRequest, *ListResponse) error
 }
 
 func RegisterAnalyticsHandler(s server.Server, hdlr AnalyticsHandler, opts ...server.HandlerOption) error {
 	type analytics interface {
-		Track(ctx context.Context, in *AnalyticsRequest, out *Empty) error
-		Get(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error
-		Delete(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error
-		List(ctx context.Context, in *Empty, out *Counters) error
+		Track(ctx context.Context, in *TrackRequest, out *TrackResponse) error
+		Get(ctx context.Context, in *GetRequest, out *GetResponse) error
+		Delete(ctx context.Context, in *DeleteRequest, out *DeleteResponse) error
+		List(ctx context.Context, in *ListRequest, out *ListResponse) error
 	}
 	type Analytics struct {
 		analytics
@@ -127,18 +127,18 @@ type analyticsHandler struct {
 	AnalyticsHandler
 }
 
-func (h *analyticsHandler) Track(ctx context.Context, in *AnalyticsRequest, out *Empty) error {
+func (h *analyticsHandler) Track(ctx context.Context, in *TrackRequest, out *TrackResponse) error {
 	return h.AnalyticsHandler.Track(ctx, in, out)
 }
 
-func (h *analyticsHandler) Get(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error {
+func (h *analyticsHandler) Get(ctx context.Context, in *GetRequest, out *GetResponse) error {
 	return h.AnalyticsHandler.Get(ctx, in, out)
 }
 
-func (h *analyticsHandler) Delete(ctx context.Context, in *AnalyticsRequest, out *AnalyticsResponse) error {
+func (h *analyticsHandler) Delete(ctx context.Context, in *DeleteRequest, out *DeleteResponse) error {
 	return h.AnalyticsHandler.Delete(ctx, in, out)
 }
 
-func (h *analyticsHandler) List(ctx context.Context, in *Empty, out *Counters) error {
+func (h *analyticsHandler) List(ctx context.Context, in *ListRequest, out *ListResponse) error {
 	return h.AnalyticsHandler.List(ctx, in, out)
 }

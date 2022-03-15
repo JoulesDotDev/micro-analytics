@@ -5,33 +5,50 @@ package analytics;
 option go_package = "./proto;analytics";
 
 service Analytics {
-	rpc Track(AnalyticsRequest) returns (Empty) {}
-	rpc Get(AnalyticsRequest) returns (AnalyticsResponse) {}
-	rpc Delete(AnalyticsRequest) returns (AnalyticsResponse) {}
-	rpc List(Empty) returns (Counters) {}
+	rpc Track(TrackRequest) returns (TrackResponse) {}
+	rpc Get(GetRequest) returns (GetResponse) {}
+	rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+	rpc List(ListRequest) returns (ListResponse) {}
 }
 
-message Empty {}
-
-message AnalyticsRequest {
+message Event {
+	// event name
 	string name = 1;
-}
-
-message RenameRequest {
-	string name = 1;
-	string newName = 2;
-}
-
-message Counter {
-	string name = 1;
+	// time at which the event was created
 	string created = 2;
+	// the amount of times the event was triggered
 	uint64 value = 3;
 }
 
-message AnalyticsResponse {
-	Counter counter = 1;
+// Track an event, it will be created if it doesn't exist
+message TrackRequest {
+	// event name
+	string name = 1;
 }
 
-message Counters {
-	repeated Counter counters = 1;
+message TrackResponse {}
+
+// Get a single event
+message GetRequest {
+	string name = 1;
+}
+
+message GetResponse {
+	Event event = 1;
+}
+
+// Delete an event
+message DeleteRequest {
+	string name = 1;
+}
+
+message DeleteResponse {
+	Event event = 1;
+}
+
+// List all events
+message ListRequest {}
+
+message ListResponse {
+	repeated Event events = 1;
 }
